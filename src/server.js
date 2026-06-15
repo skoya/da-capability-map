@@ -227,6 +227,99 @@ app.get('/api/export', async (req, res) => {
   res.end()
 })
 
+// GET /api/roles
+app.get('/api/roles', (req, res) => {
+  const db = getDb()
+  const roles = db.prepare(`SELECT * FROM roles ORDER BY id`).all()
+  db.close()
+  res.json(roles)
+})
+
+// GET /api/roles/:roleId/capabilities
+app.get('/api/roles/:roleId/capabilities', (req, res) => {
+  const db = getDb()
+  const { domain, maturity } = req.query
+  let where = [`cr.role_id = ?`]
+  let params = [req.params.roleId]
+  if (domain) { where.push(`l3.domain_id = ?`); params.push(domain) }
+  if (maturity) { where.push(`l3.maturity = ?`); params.push(maturity) }
+  const features = db.prepare(`
+    SELECT l3.*, l2.name as l2_name, l1.name as l1_name, l0.name as l0_name,
+           d.name as domain_name, d.color as domain_color
+    FROM capability_roles cr
+    JOIN capabilities_l3 l3 ON cr.capability_id = l3.id
+    JOIN capabilities_l2 l2 ON l3.l2_id = l2.id
+    JOIN capabilities_l1 l1 ON l3.l1_id = l1.id
+    JOIN capabilities_l0 l0 ON l3.l0_id = l0.id
+    JOIN domains d ON l3.domain_id = d.id
+    WHERE ${where.join(' AND ')}
+    ORDER BY l3.domain_id, l3.priority DESC, l3.sort_order
+  `).all(...params)
+  db.close()
+  res.json(features)
+})
+
+// GET /api/tags
+app.get('/api/tags', (req, res) => {
+  const db = getDb()
+  const tags = db.prepare(`
+    SELECT t.id, t.name, COUNT(ct.capability_id) as usage_count
+    FROM tags t
+    LEFT JOIN capability_tags ct ON ct.tag_id = t.id
+    GROUP BY t.id ORDER BY usage_count DESC
+  `).all()
+  db.close()
+  res.json(tags)
+})
+
+// GET /api/gap?domain= — gap analysis: L3s grouped by priority with coverage placeholder
+app.get('/api/gap', (req, res) => {
+  const db = getDb()
+  const { domain, role } = req.query
+  let where = []
+  let params = []
+  if (domain) { where.push(`l3.domain_id = ?`); params.push(domain) }
+  if (role) {
+    where.push(`EXISTS (SELECT 1 FROM capability_roles cr WHERE cr.capability_id = l3.id AND cr.role_id = ?)`)
+    params.push(role)
+  }
+  const wc = where.length ? `WHERE ${where.join(' AND ')}` : ''
+
+  const features = db.prepare(`
+    SELECT l3.id, l3.name, l3.description, l3.maturity, l3.priority,
+           l3.domain_id, d.name as domain_name, d.color as domain_color,
+           l2.name as l2_name, l1.name as l1_name, l0.name as l0_name
+    FROM capabilities_l3 l3
+    JOIN capabilities_l2 l2 ON l3.l2_id = l2.id
+    JOIN capabilities_l1 l1 ON l3.l1_id = l1.id
+    JOIN capabilities_l0 l0 ON l3.l0_id = l0.id
+    JOIN domains d ON l3.domain_id = d.id
+    ${wc}
+    ORDER BY l3.priority DESC, l3.domain_id, l3.sort_order
+  `).all(...params)
+
+  const by_priority = { 5: [], 4: [], 3: [], 1: [] }
+  for (const f of features) {
+    const p = f.priority || 3
+    const bucket = p >= 5 ? 5 : p >= 4 ? 4 : p >= 3 ? 3 : 1
+    by_priority[bucket].push(f)
+  }
+
+  const domain_summary = db.prepare(`
+    SELECT l3.domain_id, d.name, d.color,
+           COUNT(l3.id) as total,
+           SUM(CASE WHEN l3.priority >= 4 THEN 1 ELSE 0 END) as high_priority,
+           SUM(CASE WHEN l3.maturity IN ('mature','established') THEN 1 ELSE 0 END) as mature_count
+    FROM capabilities_l3 l3
+    JOIN domains d ON l3.domain_id = d.id
+    ${wc}
+    GROUP BY l3.domain_id ORDER BY d.sort_order
+  `).all(...params)
+
+  db.close()
+  res.json({ features, by_priority, domain_summary })
+})
+
 // GET /api/regulations
 app.get('/api/regulations', (req, res) => {
   const db = getDb()

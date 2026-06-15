@@ -7,6 +7,7 @@ const VIEWS = {
   '/roles':      { id: 'roles',      init: initRolesView },
   '/regulation': { id: 'regulation', init: initRegulationView },
   '/heatmap':    { id: 'heatmap',    init: initHeatmapView },
+  '/gap':        { id: 'gap',        init: () => GapView.render(document.getElementById('view-gap')) },
 }
 
 const initialized = new Set()
