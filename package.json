@@ -1,0 +1,17 @@
+{
+  "name": "da-capability-map",
+  "version": "1.0.0",
+  "description": "Digital Asset Capability Map for GSIBs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "build-db": "node scripts/build-db.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.18.2",
+    "exceljs": "^4.4.0",
+    "cors": "^2.8.5"
+  }
+}

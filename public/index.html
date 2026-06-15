@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DA Capability Map</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-name">DA Capability Map</span>
+      <span class="brand-sub">GSIB Digital Asset Taxonomy</span>
+    </div>
+    <div class="nav-links">
+      <a href="/" class="nav-link active" data-view="periodic">Periodic Table</a>
+      <a href="/tree" class="nav-link" data-view="tree">Tree Navigator</a>
+      <a href="/search" class="nav-link" data-view="search">Search</a>
+      <a href="/roles" class="nav-link" data-view="roles">Role Views</a>
+      <a href="/regulation" class="nav-link" data-view="regulation">Regulation</a>
+      <a href="/heatmap" class="nav-link" data-view="heatmap">Heat Map</a>
+    </div>
+    <div class="nav-actions">
+      <button id="export-btn" class="btn-export" onclick="exportExcel()">⬇ Export Excel</button>
+    </div>
+  </nav>
+
+  <div id="app">
+    <div id="view-periodic" class="view active"></div>
+    <div id="view-tree" class="view"></div>
+    <div id="view-search" class="view"></div>
+    <div id="view-roles" class="view"></div>
+    <div id="view-regulation" class="view"></div>
+    <div id="view-heatmap" class="view"></div>
+  </div>
+
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/periodic.js"></script>
+  <script src="/js/tree.js"></script>
+  <script src="/js/search.js"></script>
+  <script src="/js/roles.js"></script>
+  <script src="/js/regulation.js"></script>
+  <script src="/js/heatmap.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
