@@ -1,0 +1,49 @@
+# Digital Asset Capability Map — Project Context
+
+## What This Is
+
+A 4-level capability map for digital assets at GSIBs (globally systemically important banks).
+1000+ features across custody, wallets, stablecoins, CBDC, settlement, regulation, DeFi, security,
+AI/agentic, tokenisation, RWA, and market infrastructure.
+
+## Level Hierarchy
+
+- **Level 0 (L0):** Enterprise Competencies — e.g. "Custody of Digital Assets"
+- **Level 1 (L1):** Business Capabilities — services across use cases
+- **Level 2 (L2):** Technical Capabilities — technology requirements
+- **Level 3 (L3):** Features — lowest-level, 1000+ entries; these are the atomic units of work
+
+## Tech Stack
+
+- **Backend:** Node.js + Express on port 3847
+- **Database:** SQLite via better-sqlite3 at `data/capabilities.db`
+- **Frontend:** Vanilla JS, modular per view in `public/js/`
+- **Views:** periodic (element grid), tree (drill-down), roles (filtered by GSIB role),
+  regulation (jurisdiction matrix), heatmap (maturity/priority), gap (gap analysis)
+- **Schema:** `src/schema.sql`
+- **Server:** `src/server.js`
+
+## Data Quality Standards
+
+- L3 features must have: name, description, domain assignment, maturity level (1–5), market
+  coverage flags, and regulatory tag(s) where applicable.
+- Regulatory tags must map to real frameworks: MiCA, MAS MAS 01, FCA PS23/4, SEC SAB 121, etc.
+- Claims about regulatory requirements must cite the actual instrument and article/section.
+- Do not assert a feature is "required" by a regulation unless the regulation text supports it.
+- Maturity levels: 1=concept, 2=pilot, 3=emerging standard, 4=industry standard, 5=mandatory.
+
+## Markets Covered
+
+US, UK, EU (MiCA), Switzerland, Singapore, Hong Kong, UAE, Japan, Canada, Australia.
+
+## Institution Framing
+
+Frame capabilities from a GSIB / large global bank perspective. Do not produce output that reads
+as UBS-specific unless explicitly asked. Prefer institution-neutral wording.
+
+## Active Work Areas (as of June 2026)
+
+- Regulatory coverage: MiCA implementation, Basel III crypto RWA rules, SEC developments
+- AI/agentic finance capabilities (emerging L2/L3 features)
+- Stablecoin infrastructure (settlement rails, reserve management)
+- Gap analysis view: identifying missing capabilities vs. peer landscape

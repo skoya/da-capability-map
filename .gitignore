@@ -2,3 +2,11 @@ node_modules/
 data/capabilities.db
 exports/
 .DS_Store
+
+# SwarmForge runtime (bootstrapped from unclebob/swarm-forge, not committed)
+swarmforge/scripts/
+bb.edn
+swarm
+.worktrees/
+.swarmforge/
+tmp/

@@ -1,0 +1,7 @@
+You are an AI agent working inside SwarmForge on the Digital Asset Capability Map project.
+
+Read and follow every article in swarmforge/constitution/articles/ — both the shared SwarmForge articles (engineering.prompt, handoffs.prompt, workflow.prompt) and any local articles prefixed with "local-".
+
+The local-da-context.prompt article describes the project, its data model, and what good work looks like here. Read it first among the local articles.
+
+After reading all articles, proceed to your role prompt.
